@@ -1,9 +1,10 @@
-package Activations;
+package nn.Activations;
 
 import Matrix.Matrix;
 import Matrix.Column;
+import nn.NNComponent;
 
-public class Sigmoid {
+public class Sigmoid implements NNComponent {
     private String name;
 
     public Sigmoid(String name) {

@@ -1,15 +1,20 @@
-package Activations;
+package nn.Activations;
 import Matrix.Matrix;
 import Matrix.Column;
-public class ReLU {
-    private String name;
+import nn.NNComponent;
 
-    public ReLU(String name) {
+public class LeakyReLU implements NNComponent {
+    private String name;
+    private float gradient;
+
+    public LeakyReLU(String name, float grad) {
         this.name = name;
+        this.gradient = grad;
     }
 
-    public ReLU() {
+    public LeakyReLU(float grad) {
         this.name = "ReLU";
+        this.gradient = grad;
     }
 
     public Matrix forward(Matrix A) {
@@ -17,7 +22,7 @@ public class ReLU {
         for (Column c : A.getMatrix()) {
             Column temp = new Column();
             for (float x : c.getColumn()) {
-                temp.add(relu(x));
+                temp.add(lrelu(x));
             }
             res.add(temp);
         }
@@ -29,21 +34,21 @@ public class ReLU {
         for (Column c : A.getMatrix()) {
             Column temp = new Column();
             for (float x : c.getColumn()) {
-                temp.add(grad_relu(x));
+                temp.add(grad_lrelu(x));
             }
             res.add(temp);
         }
         return res;
     }
 
-    private float relu(float x) {
+    private float lrelu(float x) {
         // max(0, x)
-        return Math.max(0, x);
+        return Math.max(-this.gradient * x, x);
     }
 
-    private float grad_relu(float x) {
+    private float grad_lrelu(float x) {
         if (x < 0) {
-            return 0;
+            return -this.gradient;
         }
         else {
             return 1;
