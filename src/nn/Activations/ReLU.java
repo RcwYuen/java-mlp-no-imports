@@ -46,8 +46,8 @@ public class ReLU implements NNComponent {
     private float grad_relu(float x) {
         if (x < 0) {
             return 0;
-        }
-        else {
+        } else {
             return 1;
         }
     }
+}

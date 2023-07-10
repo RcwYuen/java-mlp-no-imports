@@ -32,6 +32,5 @@ public class main {
         Matrix D = new Matrix(C.multiply(s));
         D.setName("AB1");
         D.print();
-
     }
 }
