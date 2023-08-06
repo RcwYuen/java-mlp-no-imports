@@ -2,6 +2,10 @@ package nn;
 
 import java.util.ArrayList;
 import Matrix.Matrix;
+import nn.Activations.ReLU;
+import nn.Activations.LeakyReLU;
+import nn.Activations.Sigmoid;
+import nn.Linear;
 
 public class Sequential implements NNComponent {
     private String name;

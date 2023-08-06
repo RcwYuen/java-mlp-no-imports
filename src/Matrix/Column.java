@@ -6,7 +6,11 @@ public class Column {
     private ArrayList<Float> col;
 
     public Column() {
-        this.col = new ArrayList<Float>();
+        this.col = new ArrayList<>();
+    }
+
+    public Column(Column c) {
+        this.col = new ArrayList<>(c.getColumn());
     }
 
     // A Copying Mechanism

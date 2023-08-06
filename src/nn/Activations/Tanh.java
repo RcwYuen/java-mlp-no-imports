@@ -1,17 +1,18 @@
 package nn.Activations;
-import Matrix.Matrix;
+
 import Matrix.Column;
+import Matrix.Matrix;
 import nn.NNComponent;
 
-public class ReLU implements NNComponent {
+public class Tanh implements NNComponent {
     private String name;
 
-    public ReLU(String name) {
+    public Tanh(String name) {
         this.name = name;
     }
 
-    public ReLU() {
-        this.name = "ReLU";
+    public Tanh() {
+        this.name = "tanh";
     }
 
     public Matrix forward(Matrix A) {
@@ -19,7 +20,7 @@ public class ReLU implements NNComponent {
         for (Column c : A.getMatrix()) {
             Column temp = new Column();
             for (float x : c.getColumn()) {
-                temp.add(relu(x));
+                temp.add(tanh(x));
             }
             res.add(temp);
         }
@@ -31,23 +32,26 @@ public class ReLU implements NNComponent {
         for (Column c : A.getMatrix()) {
             Column temp = new Column();
             for (float x : c.getColumn()) {
-                temp.add(grad_relu(x));
+                temp.add(grad_tanh(x));
             }
             res.add(temp);
         }
         return res;
     }
 
-    private float relu(float x) {
-        // max(0, x)
-        return Math.max(0, x);
+    private float tanh(float x) {
+        return 2 * sig(x) - 1;
     }
 
-    private float grad_relu(float x) {
-        if (x <= 0) {
-            return 0;
-        } else {
-            return 1;
-        }
+    private float grad_tanh(float x) {
+        return 2 * grad_sig(x);
+    }
+
+    private float sig(float x) {
+        return (float) (1 / (1 + Math.exp(-x)));
+    }
+
+    private float grad_sig(float x) {
+        return this.sig(x) * (1 - this.sig(x));
     }
 }

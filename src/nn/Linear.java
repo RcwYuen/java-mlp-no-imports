@@ -16,6 +16,8 @@ public class Linear implements NNComponent {
         this.out_features = out_features;
         this.name = name;
         this.bias = bias;
+        this.W = new Matrix();
+        this.b = new Matrix();
         
         init_w();
         init_b();
@@ -26,7 +28,20 @@ public class Linear implements NNComponent {
         this.out_features = out_features;
         this.name = "";
         this.bias = bias;
+        this.W = new Matrix();
+        this.b = new Matrix();
 
+        init_w();
+        init_b();
+    }
+
+    public Linear(int in_features, int out_features) {
+        this.in_features = in_features;
+        this.out_features = out_features;
+        this.name = "";
+        this.bias = true;
+        this.W = new Matrix();
+        this.b = new Matrix();
         init_w();
         init_b();
     }
@@ -45,9 +60,9 @@ public class Linear implements NNComponent {
     }
 
     private void init_w() {
-        for (int r = 0 ; r < this.out_features ; r++) {
+        for (int c = 0 ; c < this.in_features ; c++) {
             Column col = new Column();
-            for (int c = 0 ; c < this.in_features ; c++) {
+            for (int r = 0 ; r < this.out_features ; r++) {
                 col.add(RandomUniform(LowerBound_init(), UpperBound_init()));
             }
             this.W.add(col);
