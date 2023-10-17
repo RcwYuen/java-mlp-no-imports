@@ -1,7 +1,9 @@
 package nn;
 import Matrix.Matrix;
 import Matrix.Column;
-public class MSELoss {
+public class MSELoss implements Loss {
+    private float loss;
+    private float lossGrad;
     public float forward(Matrix target, Matrix output) throws ArithmeticException {
         float loss = 0;
         if (!target.size().equals(output.size())) {
@@ -18,6 +20,7 @@ public class MSELoss {
                 loss = (float) (loss + Math.pow(i, 2));
             }
         }
+        this.loss = loss / output.size().get(1);
         return loss / output.size().get(1);
     }
 
@@ -37,6 +40,13 @@ public class MSELoss {
                 lossGrad = (float) (lossGrad + 2 * i);
             }
         }
+        this.lossGrad = lossGrad / output.size().get(1);
         return lossGrad / output.size().get(1);
     }
+
+    public float getLossGrad() {
+        return this.lossGrad;
+    }
+
+
 }

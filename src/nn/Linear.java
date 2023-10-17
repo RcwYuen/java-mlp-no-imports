@@ -11,6 +11,23 @@ public class Linear implements NNComponent {
     private boolean bias;
     private Matrix W;
     private Matrix b;
+
+    public Matrix getW() {
+        return this.W;
+    }
+
+    public void setW(Matrix newW) {
+        W = new Matrix(newW);
+    }
+
+    public Matrix getB() {
+        return this.b;
+    }
+
+    public void setB(Matrix newb) {
+        b = new Matrix(newb);
+    }
+
     public Linear(String name, int in_features, int out_features, boolean bias) {
         this.in_features = in_features;
         this.out_features = out_features;
@@ -88,6 +105,6 @@ public class Linear implements NNComponent {
     }
     
     public Matrix backward(Matrix x) {
-        return this.W;
+        return x;
     }
 }

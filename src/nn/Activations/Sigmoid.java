@@ -38,6 +38,11 @@ public class Sigmoid implements NNComponent {
         }
         return res;
     }
+    public Matrix getW() {return null;}
+    public void setW(Matrix newW) {}
+    public Matrix getB() {return null;}
+    public void setB(Matrix newb) {}
+
 
     private float sig(float x) {
         // max(0, x)
@@ -47,4 +52,5 @@ public class Sigmoid implements NNComponent {
     private float grad_sig(float x) {
         return this.sig(x) * (1 - this.sig(x));
     }
+
 }

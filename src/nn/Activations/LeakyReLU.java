@@ -5,7 +5,12 @@ import nn.NNComponent;
 
 public class LeakyReLU implements NNComponent {
     private String name;
-    private float gradient;
+    private float gradient; // gradient of LeakyReLU, equivalent to alpha
+
+    public Matrix getW() {return null;}
+    public void setW(Matrix newW) {}
+    public Matrix getB() {return null;}
+    public void setB(Matrix newb) {}
 
     public LeakyReLU(String name, float grad) {
         this.name = name;

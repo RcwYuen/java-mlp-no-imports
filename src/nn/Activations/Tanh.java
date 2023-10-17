@@ -15,6 +15,11 @@ public class Tanh implements NNComponent {
         this.name = "tanh";
     }
 
+    public Matrix getW() {return null;}
+    public void setW(Matrix newW) {}
+    public Matrix getB() {return null;}
+    public void setB(Matrix newb) {}
+
     public Matrix forward(Matrix A) {
         Matrix res = new Matrix();
         for (Column c : A.getMatrix()) {

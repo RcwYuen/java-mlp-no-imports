@@ -11,7 +11,14 @@ public class Sequential implements NNComponent {
     private String name;
     private ArrayList<NNComponent> network;
     private ArrayList<Matrix> forwardCache;
+    public ArrayList<Matrix> getForwardCache() {
+        return this.forwardCache;
+    }
 
+    public Matrix getW() {return null;}
+    public void setW(Matrix newW) {}
+    public Matrix getB() {return null;}
+    public void setB(Matrix newb) {}
 
     public Sequential(String name) {
         this.network = new ArrayList<>();
