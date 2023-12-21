@@ -14,11 +14,16 @@ public class CSV {
     private ArrayList<String> colName;
     private ArrayList<String> date;
     private Matrix data;
+    private ArrayList<Double> columnMax;
+    private ArrayList<Double> columnMin;
+
     public CSV(String filename) {
         this.filename = filename;
         this.data = new Matrix();
         this.date = new ArrayList<>();
         this.colName = new ArrayList<>();
+        this.columnMax = new ArrayList<>();
+        this.columnMin = new ArrayList<>();
     }
 
     public String getFilename() {
@@ -33,6 +38,63 @@ public class CSV {
         return new Column(data.getRow(index));
     }
 
+    private void scale() {
+        Matrix scaled = new Matrix();
+        for (Column c : this.data.getMatrix()) {
+            double min = ColumnMin(c);
+            double max = ColumnMax(c);
+            this.columnMin.add(min);
+            this.columnMax.add(max);
+            Matrix colMat = new Matrix();
+            colMat.add(c);
+            colMat = colMat.subtract(min).multiply(1 / (max - min));
+            scaled.add(colMat.getColumn(0));
+        }
+        this.data = new Matrix(scaled);
+    }
+
+    private double ColumnMax(Column xs) {
+        double max = 0;
+        for (double x : xs.getColumn()) {
+            max = Math.max(max, x);
+        }
+        return max;
+    }
+
+    private double ColumnMin(Column xs) {
+        double min = 9999999;
+        for (double x : xs.getColumn()) {
+            min = Math.min(min, x);
+        }
+        return min;
+    }
+
+    public ArrayList<Double> scale(ArrayList<Double> x) throws IndexOutOfBoundsException {
+        if (x.size() != this.columnMax.size()) {
+            throw new IndexOutOfBoundsException("Input size does not match amount of columns expected");
+        }
+        else {
+            ArrayList<Double> result = new ArrayList<>();
+            for (int i = 0 ; i < x.size() ; i++) {
+                result.add((x.get(i) - columnMin.get(i)) / (columnMax.get(i) - columnMin.get(i)));
+            }
+            return result;
+        }
+    }
+
+    public ArrayList<Double> inverseScale(ArrayList<Double> x) throws IndexOutOfBoundsException {
+        if (x.size() != this.columnMax.size()) {
+            throw new IndexOutOfBoundsException("Input size does not match amount of columns expected");
+        }
+        else {
+            ArrayList<Double> result = new ArrayList<>();
+            for (int i = 0 ; i < x.size() ; i++) {
+                result.add(x.get(i) * (columnMax.get(i) - columnMin.get(i)) + columnMin.get(i));
+            }
+            return result;
+        }
+    }
+
     public void readFile() {
         boolean colNameDone = false;
         File file = new File(this.filename);
@@ -42,14 +104,14 @@ public class CSV {
             StringBuilder cell = new StringBuilder();
             int c;
             while ((c = reader.read()) != -1) {
-                String character = String.valueOf(c);
+                String character = String.valueOf((char) c);
                 if (character.equalsIgnoreCase("\n")) {
                     if (!colNameDone) {
                         colNameDone = true;
                         colName.add(cell.toString());
                     }
                     else {
-                        temp.add(Float.parseFloat(cell.toString()));
+                        temp.add(Double.parseDouble(cell.toString()));
                         this.data.add(new Column(temp));
                     }
                     cell = new StringBuilder();
@@ -64,7 +126,7 @@ public class CSV {
                             this.date.add(cell.toString());
                         }
                         else {
-                            temp.add(Float.parseFloat(cell.toString()));
+                            temp.add(Double.parseDouble(cell.toString()));
                         }
                     }
                     cell = new StringBuilder();
@@ -78,6 +140,8 @@ public class CSV {
         catch (IOException ioe) {
             System.err.println("Import Failed");
         }
+
         this.data = new Matrix(this.data.T());
+        this.scale();
     }
 }

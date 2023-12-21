@@ -5,28 +5,30 @@ import nn.NNComponent;
 
 public class LeakyReLU implements NNComponent {
     private String name;
-    private float gradient; // gradient of LeakyReLU, equivalent to alpha
+    private double gradient; // gradient of LeakyReLU, equivalent to alpha
 
     public Matrix getW() {return null;}
     public void setW(Matrix newW) {}
     public Matrix getB() {return null;}
     public void setB(Matrix newb) {}
+    private Matrix ins;
 
-    public LeakyReLU(String name, float grad) {
+    public LeakyReLU(String name, double grad) {
         this.name = name;
         this.gradient = grad;
     }
 
-    public LeakyReLU(float grad) {
+    public LeakyReLU(double grad) {
         this.name = "ReLU";
         this.gradient = grad;
     }
 
     public Matrix forward(Matrix A) {
+        this.ins = new Matrix(A);
         Matrix res = new Matrix();
         for (Column c : A.getMatrix()) {
             Column temp = new Column();
-            for (float x : c.getColumn()) {
+            for (double x : c.getColumn()) {
                 temp.add(lrelu(x));
             }
             res.add(temp);
@@ -36,27 +38,33 @@ public class LeakyReLU implements NNComponent {
 
     public Matrix backward(Matrix A) {
         Matrix res = new Matrix();
-        for (Column c : A.getMatrix()) {
+        for (Column c : this.ins.getMatrix()) {
             Column temp = new Column();
-            for (float x : c.getColumn()) {
+            for (double x : c.getColumn()) {
                 temp.add(grad_lrelu(x));
             }
             res.add(temp);
         }
-        return res;
+        return A.dot(res.T());
     }
 
-    private float lrelu(float x) {
+    private double lrelu(Double x) {
         // max(0, x)
-        return Math.max(-this.gradient * x, x);
+        return Math.max(this.gradient * x, x);
     }
 
-    private float grad_lrelu(float x) {
+    private double grad_lrelu(Double x) {
         if (x < 0) {
-            return -this.gradient;
+            return this.gradient;
         }
         else {
             return 1;
         }
     }
+
+    public boolean hasGrad() {
+        return false;
+    }
+    public Matrix getWgrad() { return null; }
+    public Matrix getBgrad() { return null; }
 }

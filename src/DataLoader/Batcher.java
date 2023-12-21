@@ -5,9 +5,14 @@ import Matrix.Matrix;
 public class Batcher {
     private Integer batchSize;
     private CSV csv;
-    public Batcher (Integer batchSize, String filename) {
+    public Batcher(Integer batchSize, String filename) {
         this.batchSize = batchSize;
         this.csv = new CSV(filename);
+    }
+
+    public Batcher(Integer batchSize, CSV csv) {
+        this.batchSize = batchSize;
+        this.csv = csv;
     }
 
     public Integer getBatchSize() {
@@ -16,6 +21,10 @@ public class Batcher {
 
     public void setBatchSize(Integer batchSize) {
         this.batchSize = batchSize;
+    }
+
+    public int size() {
+        return csv.getData().size().get(0) - this.batchSize + 1;
     }
 
     public Matrix getBatch(Integer index) throws IllegalArgumentException {
@@ -27,7 +36,7 @@ public class Batcher {
             for (int i = index ; i < index + this.batchSize ; i++) {
                 batch.add(csv.getRow(i));
             }
-            return batch.T();
+            return batch;
         }
     }
 }

@@ -2,18 +2,11 @@ package nn;
 
 import java.util.ArrayList;
 import Matrix.Matrix;
-import nn.Activations.ReLU;
-import nn.Activations.LeakyReLU;
-import nn.Activations.Sigmoid;
-import nn.Linear;
+import Matrix.Column;
 
 public class Sequential implements NNComponent {
     private String name;
     private ArrayList<NNComponent> network;
-    private ArrayList<Matrix> forwardCache;
-    public ArrayList<Matrix> getForwardCache() {
-        return this.forwardCache;
-    }
 
     public Matrix getW() {return null;}
     public void setW(Matrix newW) {}
@@ -50,18 +43,26 @@ public class Sequential implements NNComponent {
     }
 
     public Matrix forward(Matrix Y) {
-        forwardCache = new ArrayList<Matrix>();
         for (NNComponent comp : this.network) {
-            forwardCache.add(Y);
             Y = comp.forward(Y);
         }
         return Y;
     }
 
     public Matrix backward(Matrix Y) {
-        for (int layer = this.network.size() - 1 ; layer >= 0 ; layer--) {
-            Y = this.network.get(layer).backward(this.forwardCache.get(layer)); // check this
-        }
-        return Y;
+        return null;
     }
+
+    public void backward(Loss loss) {
+        Matrix delta = loss.getLossGrad();
+        for (int layer = network.size() - 1 ; layer >= 0 ; layer--) {
+            delta = network.get(layer).backward(delta);
+        }
+    }
+
+    public boolean hasGrad() {
+        return false;
+    }
+    public Matrix getWgrad() { return null; }
+    public Matrix getBgrad() { return null; }
 }

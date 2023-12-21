@@ -1,52 +1,33 @@
 package nn;
 import Matrix.Matrix;
 import Matrix.Column;
+
 public class MSELoss implements Loss {
-    private float loss;
-    private float lossGrad;
-    public float forward(Matrix target, Matrix output) throws ArithmeticException {
-        float loss = 0;
+    private double loss;
+    private Matrix lossGrad;
+
+    public double compute(Matrix target, Matrix output) throws ArithmeticException {
         if (!target.size().equals(output.size())) {
             throw new ArithmeticException("Targetted Matrix Size should be identical to the Network Output");
         }
-        // (rows, columns)
-        for (int dp = 0 ; dp < output.size().get(1) ; dp++) {
-            Matrix outFeat = new Matrix();
-            outFeat.add(output.getColumn(dp));
-            Matrix tarFeat = new Matrix();
-            tarFeat.add(target.getColumn(dp));
-            Column DirectionalVector = tarFeat.subtract(outFeat).getColumn(0);
-            for (float i : DirectionalVector.getColumn()) {
-                loss = (float) (loss + Math.pow(i, 2));
+
+        Matrix directional = target.subtract(output);
+        this.loss = MatrixAvg(directional.dot(directional));
+        this.lossGrad = directional.multiply(-2.0);
+        return this.loss;
+    }
+
+    private double MatrixAvg(Matrix x) {
+        double result = 0;
+        for (Column col : x.getMatrix()) {
+            for (double val : col.getColumn()) {
+                result += val;
             }
         }
-        this.loss = loss / output.size().get(1);
-        return loss / output.size().get(1);
+        return result / (x.size().get(0) * x.size().get(1));
     }
 
-    public float backward(Matrix target, Matrix output) throws ArithmeticException {
-        float lossGrad = 0;
-        if (!target.size().equals(output.size())) {
-            throw new ArithmeticException("Targetted Matrix Size should be identical to the Network Output");
-        }
-        // (rows, columns)
-        for (int dp = 0 ; dp < output.size().get(1) ; dp++) {
-            Matrix outFeat = new Matrix();
-            outFeat.add(output.getColumn(dp));
-            Matrix tarFeat = new Matrix();
-            tarFeat.add(target.getColumn(dp));
-            Column DirectionalVector = tarFeat.subtract(outFeat).getColumn(0);
-            for (float i : DirectionalVector.getColumn()) {
-                lossGrad = (float) (lossGrad + 2 * i);
-            }
-        }
-        this.lossGrad = lossGrad / output.size().get(1);
-        return lossGrad / output.size().get(1);
+    public Matrix getLossGrad() {
+        return this.lossGrad.T();
     }
-
-    public float getLossGrad() {
-        return this.lossGrad;
-    }
-
-
 }

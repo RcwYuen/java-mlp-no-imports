@@ -3,7 +3,7 @@ package Matrix;
 import java.util.ArrayList;
 
 public class Column {
-    private ArrayList<Float> col;
+    private ArrayList<Double> col;
 
     public Column() {
         this.col = new ArrayList<>();
@@ -14,15 +14,15 @@ public class Column {
     }
 
     // A Copying Mechanism
-    public Column(ArrayList<Float> col) {
+    public Column(ArrayList<Double> col) {
         this.col = col;
     }
 
-    public ArrayList<Float> getColumn(){
+    public ArrayList<Double> getColumn(){
         return this.col;
     }
 
-    public float get(int i) {
+    public double get(int i) {
         return col.get(i);
     }
 
@@ -34,7 +34,7 @@ public class Column {
         return col;
     }
 
-    public void add(float f){
+    public void add(double f){
         col.add(f);
     }
 

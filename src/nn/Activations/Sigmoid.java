@@ -6,6 +6,7 @@ import nn.NNComponent;
 
 public class Sigmoid implements NNComponent {
     private String name;
+    private Matrix ins;
 
     public Sigmoid(String name) {
         this.name = name;
@@ -16,10 +17,11 @@ public class Sigmoid implements NNComponent {
     }
 
     public Matrix forward(Matrix A) {
+        this.ins = new Matrix(A);
         Matrix res = new Matrix();
         for (Column c : A.getMatrix()) {
             Column temp = new Column();
-            for (float x : c.getColumn()) {
+            for (double x : c.getColumn()) {
                 temp.add(sig(x));
             }
             res.add(temp);
@@ -29,14 +31,14 @@ public class Sigmoid implements NNComponent {
 
     public Matrix backward(Matrix A) {
         Matrix res = new Matrix();
-        for (Column c : A.getMatrix()) {
+        for (Column c : this.ins.getMatrix()) {
             Column temp = new Column();
-            for (float x : c.getColumn()) {
+            for (double x : c.getColumn()) {
                 temp.add(grad_sig(x));
             }
             res.add(temp);
         }
-        return res;
+        return A.dot(res.T());
     }
     public Matrix getW() {return null;}
     public void setW(Matrix newW) {}
@@ -44,13 +46,19 @@ public class Sigmoid implements NNComponent {
     public void setB(Matrix newb) {}
 
 
-    private float sig(float x) {
+    private double sig(double x) {
         // max(0, x)
-        return (float) (1 / (1 + Math.exp(-x)));
+        return (double) (1 / (1 + Math.exp(-x)));
     }
 
-    private float grad_sig(float x) {
+    private double grad_sig(double x) {
         return this.sig(x) * (1 - this.sig(x));
     }
+
+    public boolean hasGrad() {
+        return false;
+    }
+    public Matrix getWgrad() { return null; }
+    public Matrix getBgrad() { return null; }
 
 }

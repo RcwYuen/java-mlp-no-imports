@@ -9,4 +9,7 @@ public interface NNComponent {
     public void setW(Matrix newW);
     public Matrix getB();
     public void setB(Matrix newb);
+    public boolean hasGrad();
+    public Matrix getWgrad();
+    public Matrix getBgrad();
 }

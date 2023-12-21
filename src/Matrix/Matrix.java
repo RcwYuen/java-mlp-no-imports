@@ -2,12 +2,14 @@ package Matrix;
 
 import java.sql.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Matrix {
     private ArrayList<Column> matrix;
     private String name;
 
     public Matrix() {
+        this.name = "";
         this.matrix = new ArrayList<Column>();
     }
 
@@ -88,7 +90,7 @@ public class Matrix {
         return size_tuple;
     }
 
-    public float get(int row, int col){
+    public double get(int row, int col){
         return this.matrix.get(col).get(row);
     }
 
@@ -126,7 +128,19 @@ public class Matrix {
         }
     }
 
-    public Matrix multiply(float i) {
+    public Matrix addition(double B) {
+        Matrix result = new Matrix();
+        for (int col = 0 ; col < this.size().get(1) ; col++) {
+            Column res = new Column();
+            for (int row = 0 ; row < this.size().get(0) ; row++) {
+                res.add(this.get(row, col) + B);
+            }
+            result.add(res);
+        }
+        return result;
+    }
+
+    public Matrix multiply(Double i) {
         Matrix result = new Matrix();
         for (int col = 0 ; col < this.size().get(1) ; col++) {
             Column res = new Column();
@@ -138,33 +152,65 @@ public class Matrix {
         return result;
     }
 
-    // Returns AB
-    public Matrix multiply(Matrix B) throws ArithmeticException {
+    public Matrix dot(Matrix B) throws ArithmeticException {
         Matrix result = new Matrix(); // (rows, columns)
-        if (this.size().get(1).equals(B.size().get(0))) { // left matrix has same amount of columns as the right matrix's rows
+        if (this.size().equals(B.size())) { // left matrix has same amount of columns as the right matrix's rows
             for (int i = 0 ; i < B.size().get(1) ; i++) { // because we expect the resulting matrix to have size (A.rows, B.columns)
-                Column res = new Column();
-                Column Bcol = B.getColumn(i);
-                for (int j = 0 ; j < this.size().get(0) ; j++) {
-                    Column Arow = this.getRow(j);
-                    float temp = 0;
-                    for (int k = 0 ; k < this.size().get(1) ; k++) {
-                        temp += Arow.get(k) * Bcol.get(k);
-                    }
-                    res.add(temp);
+                Column col1 = this.matrix.get(i);
+                Column col2 = B.getColumn(i);
+                Column temp = new Column();
+                for (int j = 0 ; j < B.size().get(0); j++) {
+                    temp.add(col1.get(j) * col2.get(j));
                 }
-                result.add(res);
+                result.add(temp);
             }
             return result;
         }
         else {
-            throw new ArithmeticException("Matrix " + this.name() + " dimensions does not match Matrix " + B.name() + "in multiplication");
+            throw new ArithmeticException("Matrix " + this.name() + " dimensions does not match Matrix " + B.name() + "in dot");
+        }
+
+    }
+
+    // Returns AB
+    public Matrix multiply(Matrix B) throws ArithmeticException {
+        if (B.size().equals(Arrays.asList(1, 1))) {
+            return this.multiply(B.get(0, 0));
+        }
+        else if (this.size().equals(Arrays.asList(1, 1))) {
+            return B.multiply(this.get(0, 0));
+        }
+        else {
+            Matrix result = new Matrix(); // (rows, columns)
+            if (this.size().get(1).equals(B.size().get(0))) { // left matrix has same amount of columns as the right matrix's rows
+                for (int i = 0 ; i < B.size().get(1) ; i++) { // because we expect the resulting matrix to have size (A.rows, B.columns)
+                    Column res = new Column();
+                    Column Bcol = B.getColumn(i);
+                    for (int j = 0 ; j < this.size().get(0) ; j++) {
+                        Column Arow = this.getRow(j);
+                        double temp = 0;
+                        for (int k = 0 ; k < this.size().get(1) ; k++) {
+                            temp += Arow.get(k) * Bcol.get(k);
+                        }
+                        res.add(temp);
+                    }
+                    result.add(res);
+                }
+                return result;
+            }
+            else {
+                throw new ArithmeticException("Matrix " + this.name() + " dimensions does not match Matrix " + B.name() + "in multiplication");
+            }
         }
     }
 
     public Matrix subtract(Matrix B) {
-        B = B.multiply(-1);
+        B = B.multiply(-1.0);
         return this.addition(B);
+    }
+
+    public Matrix subtract(Double B) {
+        return this.addition(-B);
     }
 
     public Matrix T(){

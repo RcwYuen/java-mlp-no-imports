@@ -1,7 +1,6 @@
-- Batcher
-- CSV
-- Image
-- Adam
-- Nesterov Stochastic Gradient Descent
-- SGD
-- Optimisers
+
+
+Ignores:
+- Image.java
+- NesterovSGD.java
+- Adam.java
