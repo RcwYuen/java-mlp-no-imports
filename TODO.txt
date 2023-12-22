@@ -1,3 +1,0 @@
-1. descale output preds to csv
-2. output loss to csv
-3. output batchwise loss to csv

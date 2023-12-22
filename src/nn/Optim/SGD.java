@@ -28,4 +28,8 @@ public class SGD implements Optimisers {
             }
         }
     }
+
+    public void changeLR(double lr) {
+        this.lr = lr;
+    }
 }

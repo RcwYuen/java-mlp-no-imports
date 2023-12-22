@@ -95,53 +95,50 @@ public class CSV {
         }
     }
 
-    public void readFile() {
+    public void readFile(boolean scale) throws IOException {
         boolean colNameDone = false;
         File file = new File(this.filename);
-        try {
-            FileReader reader = new FileReader(file);
-            Column temp = new Column();
-            StringBuilder cell = new StringBuilder();
-            int c;
-            while ((c = reader.read()) != -1) {
-                String character = String.valueOf((char) c);
-                if (character.equalsIgnoreCase("\n")) {
-                    if (!colNameDone) {
-                        colNameDone = true;
-                        colName.add(cell.toString());
+        FileReader reader = new FileReader(file);
+        Column temp = new Column();
+        StringBuilder cell = new StringBuilder();
+        int c;
+        while ((c = reader.read()) != -1) {
+            String character = String.valueOf((char) c);
+            if (character.equalsIgnoreCase("\n")) {
+                if (!colNameDone) {
+                    colNameDone = true;
+                    colName.add(cell.toString());
+                }
+                else {
+                    temp.add(Double.parseDouble(cell.toString()));
+                    this.data.add(new Column(temp));
+                }
+                cell = new StringBuilder();
+                temp = new Column();
+            }
+            else if (character.equalsIgnoreCase(",")) {
+                if (!colNameDone) {
+                    colName.add(cell.toString());
+                }
+                else {
+                    if (colName.get(temp.getSize()).equalsIgnoreCase("date")) {
+                        this.date.add(cell.toString());
                     }
                     else {
                         temp.add(Double.parseDouble(cell.toString()));
-                        this.data.add(new Column(temp));
                     }
-                    cell = new StringBuilder();
-                    temp = new Column();
                 }
-                else if (character.equalsIgnoreCase(",")) {
-                    if (!colNameDone) {
-                        colName.add(cell.toString());
-                    }
-                    else {
-                        if (colName.get(temp.getSize()).equalsIgnoreCase("date")) {
-                            this.date.add(cell.toString());
-                        }
-                        else {
-                            temp.add(Double.parseDouble(cell.toString()));
-                        }
-                    }
-                    cell = new StringBuilder();
-                }
-                else {
-                    cell.append(character);
-                }
+                cell = new StringBuilder();
             }
-            reader.close();
+            else {
+                cell.append(character);
+            }
         }
-        catch (IOException ioe) {
-            System.err.println("Import Failed");
-        }
+        reader.close();
 
         this.data = new Matrix(this.data.T());
-        this.scale();
+        if (scale) {
+            this.scale();
+        }
     }
 }
