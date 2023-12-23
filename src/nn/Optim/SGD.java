@@ -1,14 +1,8 @@
 package nn.Optim;
 
-import nn.Loss;
-import nn.NNComponent;
 import nn.Optimisers;
 import nn.Sequential;
 import Matrix.Matrix;
-import Matrix.Column;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public class SGD implements Optimisers {
     private double lr;

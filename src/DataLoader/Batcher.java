@@ -5,11 +5,6 @@ import Matrix.Matrix;
 public class Batcher {
     private Integer batchSize;
     private CSV csv;
-    public Batcher(Integer batchSize, String filename) {
-        this.batchSize = batchSize;
-        this.csv = new CSV(filename);
-    }
-
     public Batcher(Integer batchSize, CSV csv) {
         this.batchSize = batchSize;
         this.csv = csv;

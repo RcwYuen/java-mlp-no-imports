@@ -22,13 +22,9 @@ public class Main {
         nn.addModule(
                 new Linear(13, 64),
                 new LeakyReLU(-0.2),
-                new Linear(64, 32),
+                new Linear(64, 16),
                 new LeakyReLU(-0.2),
-                new Linear(32, 16),
-                new LeakyReLU(-0.2),
-                new Linear(16, 4),
-                new LeakyReLU(-0.2),
-                new Linear(4, 1)
+                new Linear(16, 1)
         );
 
         CSV InputDataset = new CSV("Xtrain.csv");
@@ -45,7 +41,7 @@ public class Main {
         SGD optim = new SGD(0.01);
         MSELoss criterion = new MSELoss();
 
-        int epoch = 100;
+        int epoch = 1;
         for (int i = 0 ; i < epoch ; i++) {
             double loss = 0;
             for (int batchNo = 0 ; batchNo < xBatcher.size() ; batchNo++) {
@@ -68,7 +64,7 @@ public class Main {
         System.out.println("-> Expected File Type to be CSV");
         String fname;
         while (true) {
-            System.out.print("-> Evaluation Data Filname: ");
+            System.out.print("-> Evaluation Data Filename: ");
             Scanner scanner = new Scanner(System.in);
             fname = scanner.nextLine();
             if (fname.equalsIgnoreCase("")) {
@@ -98,7 +94,7 @@ public class Main {
 
                     System.out.print("-> Output Data Filname: ");
                     String outfname = scanner.nextLine();
-                    if (outfname.endsWith(".csv")) { ExportCSV.export(Yeval.T(), outfname); }
+                    if (outfname.endsWith(".csv")) { ExportCSV.export(result.T(), outfname); }
                     else { ExportCSV.export(result.T(), outfname + ".csv"); }
                 }
                 catch (IOException ioe) {

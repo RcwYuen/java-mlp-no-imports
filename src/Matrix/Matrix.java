@@ -169,7 +169,6 @@ public class Matrix {
         else {
             throw new ArithmeticException("Matrix " + this.name() + " dimensions does not match Matrix " + B.name() + "in dot");
         }
-
     }
 
     // Returns AB

@@ -10,31 +10,21 @@ import java.util.ArrayList;
 public class ExportCSV {
 
     public static void export(Matrix x, String fname) throws IOException {
-        try {
-            FileWriter fw = new FileWriter(fname);
-            for (Column c : x.T().getMatrix()) {
-                for (double datapoints : c.getColumn()) {
-                    fw.write(datapoints + ",");
-                }
-                fw.write("\n");
+        FileWriter fw = new FileWriter(fname);
+        for (Column c : x.T().getMatrix()) {
+            for (double datapoints : c.getColumn()) {
+                fw.write(datapoints + ",");
             }
-            fw.close();
+            fw.write("\n");
         }
-        catch (IOException ioe) {
-            throw new IOException("File is already defined");
-        }
+        fw.close();
     }
 
     public static void export(ArrayList<Double> x, String fname) throws IOException {
-        try {
-            FileWriter fw = new FileWriter(fname);
-            for (double num : x) {
-                fw.write(num + "\n");
-            }
-            fw.close();
+        FileWriter fw = new FileWriter(fname);
+        for (double num : x) {
+            fw.write(num + "\n");
         }
-        catch (IOException ioe) {
-            throw new IOException("File is already defined");
-        }
+        fw.close();
     }
 }
