@@ -20,15 +20,15 @@ public class Main {
     public static void main(String[] args) throws IOException {
         Sequential nn = new Sequential("mlp");
         nn.addModule(
-                new Linear(13, 64),
+                new Linear(20, 64),
                 new LeakyReLU(-0.2),
                 new Linear(64, 16),
                 new LeakyReLU(-0.2),
                 new Linear(16, 1)
         );
 
-        CSV InputDataset = new CSV("Xtrain.csv");
-        CSV OutputDataset = new CSV("Ytrain.csv");
+        CSV InputDataset = new CSV("GOLD10Days_xtrain.csv");
+        CSV OutputDataset = new CSV("GOLD10Days_ytrain.csv");
         InputDataset.readFile(true);
         OutputDataset.readFile(true);
 
@@ -41,7 +41,7 @@ public class Main {
         SGD optim = new SGD(0.01);
         MSELoss criterion = new MSELoss();
 
-        int epoch = 1;
+        int epoch = 10;
         for (int i = 0 ; i < epoch ; i++) {
             double loss = 0;
             for (int batchNo = 0 ; batchNo < xBatcher.size() ; batchNo++) {
@@ -52,6 +52,9 @@ public class Main {
                 BatchWiseLoss.add(loss);
                 nn.backward(criterion);
                 optim.step(nn);
+                if (batchNo % 100 == 0) {
+                    System.out.println("Epoch " + (i+1) + "/" + epoch + "; Batch " + batchNo + "/" + xBatcher.size() + "; loss - " + loss);
+                }
             }
             System.out.println("Epoch " + (i+1) + "/" + epoch + "; loss - " + loss);
             EpochWiseLoss.add(loss);
